@@ -12,7 +12,37 @@ gem 'user-auth', git: 'https://github.com/dawsonandrews/services-user-auth'
 
 And then execute:
 
-    $ bundle
+```sh
+$ bundle
+```
+
+### Import and run migrations
+
+```ruby
+# Add this to your Rakefile
+require "bundler/setup"
+require "user_auth/rake_tasks"
+```
+
+Copy migrations and migrate:
+
+```sh
+$ bin/rake user_auth:import_migrations
+$ bin/rake db:migrate
+```
+
+### Map to a URL in config.ru
+
+```ruby
+require_relative "./config/boot"
+require "user_auth/api"
+
+# Somewhere after your middleware
+
+map("/auth") { run UserAuth::Api }
+```
+
+That’s you all setup, see endpoints below for documentation on how to get a token etc.
 
 
 ### Endpoints
