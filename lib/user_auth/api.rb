@@ -29,7 +29,7 @@ module UserAuth
 
       status 201
 
-      json(token: Token.new.create(user_id: user.id))
+      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600))
     end
 
     def params
