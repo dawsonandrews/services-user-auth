@@ -2,6 +2,7 @@ require "spec_helper"
 
 RSpec.describe UserAuth::User, type: :model do
   describe "#fields" do
+    it { expect(subject).to respond_to(:refresh_tokens) }
     it { expect(subject).to respond_to(:email) }
     it { expect(subject).to respond_to(:password) }
     it { expect(subject).to respond_to(:created_at) }

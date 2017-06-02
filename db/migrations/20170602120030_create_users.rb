@@ -13,11 +13,11 @@ Sequel.migration do
       index :username, unique: true
     end
 
-    create_table :reset_tokens do
+    create_table :refresh_tokens do
       primary_key :id
       foreign_key :user_id, :users, null: false
       String :token, null: false, size: 64
-      DateTime :revoked_at, null: false
+      DateTime :revoked_at
       DateTime :created_at, null: false
       DateTime :updated_at, null: false
 
@@ -26,7 +26,7 @@ Sequel.migration do
   end
 
   down do
-    drop_table :reset_tokens
+    drop_table :refresh_tokens
     drop_table :users
   end
 end

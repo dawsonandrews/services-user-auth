@@ -1,4 +1,5 @@
 require_relative "../../config/boot"
+require_relative "./refresh_token"
 require_relative "./user"
 require_relative "./token"
 require_relative "./password_verifier"
@@ -21,7 +22,7 @@ module UserAuth
 
       status 201
 
-      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info)
+      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info, refresh_token: user.refresh_token!)
     end
 
     post "/token" do
@@ -29,7 +30,7 @@ module UserAuth
       verifier = PasswordVerifier.new(user.password_digest)
 
       if verifier.verify(params[:password])
-        json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info)
+        json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info, refresh_token: user.refresh_token!)
       else
         halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
       end

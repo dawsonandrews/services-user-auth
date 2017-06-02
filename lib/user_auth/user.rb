@@ -4,6 +4,7 @@ module UserAuth
   class User < Sequel::Model
     attr_reader :password
     attr_accessor :password_changing
+    one_to_many :refresh_tokens
 
     def validate
       super
@@ -25,6 +26,10 @@ module UserAuth
 
     def full_info
       info.merge(email: email)
+    end
+
+    def refresh_token!
+      add_refresh_token(user: self).token
     end
   end
 end

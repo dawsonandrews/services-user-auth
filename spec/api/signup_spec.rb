@@ -22,6 +22,8 @@ RSpec.describe "Signup", type: :api do
       payload = UserAuth::Token.new.parse(response_json["token"])
       user = UserAuth::User[payload["user_id"]]
       expect(user.info["name"]).to eq("Pete")
+
+      expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
     end
   end
 end
