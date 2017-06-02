@@ -2,6 +2,14 @@
 
 Rack compatible user authentication microservice. Can be run standalone or mounted into another rack app.
 
+#### Dependencies
+
+Ensure you have Sequel (> v.4.44.0) setup and connected in your application before attempting to mount UserAuth.
+
+- Sequel (model plugins: :timestamps, :validation_helpers, :defaults_setter)
+- Postgres (pg gem)
+- Rack 2.0
+
 ## Usage
 
 Add this line to your application's Gemfile:
