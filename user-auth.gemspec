@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "user/auth/version"
+require "user_auth/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "da-user-auth"
-  spec.version       = User::Auth::VERSION
+  spec.version       = UserAuth::VERSION
   spec.authors       = ["Pete Hawkins"]
   spec.email         = ["pete@phawk.co.uk"]
 
@@ -30,7 +30,18 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "activesupport"
+  spec.add_runtime_dependency "dotenv"
+  spec.add_runtime_dependency "rack-cors"
+  spec.add_runtime_dependency "sinatra", "~> 2.0.0"
+  spec.add_runtime_dependency "pg", "~> 0.20"
+  spec.add_runtime_dependency "sequel", "~> 4.44.0"
+  spec.add_runtime_dependency "jwt"
+
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rack-test"
+  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "bundler-audit"
 end

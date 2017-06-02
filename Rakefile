@@ -1,6 +1,9 @@
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec)
+# Add current path and lib to the load path
+$: << File.expand_path('../', __FILE__)
+$: << File.expand_path('../lib', __FILE__)
 
-task :default => :spec
+Dir.glob('lib/tasks/*.rake').each { |r| import r }
+
+task default: ["ci:all"]
