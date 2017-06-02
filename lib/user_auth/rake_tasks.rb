@@ -1,2 +1,1 @@
-path = File.expand_path(File.join(__dir__, "tasks", "*.rake"))
-Dir.glob(path).each { |r| import r }
+import File.expand_path(File.join(__dir__, "tasks", "import_migrations.rake"))

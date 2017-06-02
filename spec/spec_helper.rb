@@ -2,11 +2,9 @@
 ENV["APP_ENV"] = "test"
 
 require "fast_helper"
-require "bundler"
-Bundler.require :default, :test
+require_relative "../config/boot"
 require "user_auth"
 
-require_relative "../config/boot"
 require_relative "support/api_helper"
 
 RSpec.configure do |config|

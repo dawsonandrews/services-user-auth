@@ -1,3 +1,4 @@
+require_relative "./config/boot"
 require_relative "./lib/user_auth/api"
 require "rack/cors"
 

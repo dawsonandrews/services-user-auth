@@ -1,4 +1,3 @@
-require_relative "../../config/boot"
 require_relative "./models/refresh_token"
 require_relative "./models/user"
 require_relative "./token"
