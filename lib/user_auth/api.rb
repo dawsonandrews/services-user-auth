@@ -1,12 +1,14 @@
 require_relative "../../config/boot"
-require_relative "./refresh_token"
-require_relative "./user"
+require_relative "./models/refresh_token"
+require_relative "./models/user"
 require_relative "./token"
 require_relative "./password_verifier"
 require "sinatra/base"
 
 module UserAuth
   class Api < Sinatra::Base
+    include UserAuth::Models
+
     before { content_type(:json) }
 
     get "/" do

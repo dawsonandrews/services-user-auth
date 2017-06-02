@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe UserAuth::RefreshToken, type: :model do
+RSpec.describe UserAuth::Models::RefreshToken, type: :model do
   describe "#fields" do
     it { expect(subject).to respond_to(:user_id) }
     it { expect(subject).to respond_to(:token) }
@@ -10,7 +10,7 @@ RSpec.describe UserAuth::RefreshToken, type: :model do
   end
 
   it "creates a token on save" do
-    user = UserAuth::User.create(email: "pete@example.org", password: "mcflurrys")
+    user = UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys")
     rt = described_class.new(user_id: user.id).save
     expect(rt.token).not_to be_nil
   end
