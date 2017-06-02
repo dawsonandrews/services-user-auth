@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "user_auth/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "da-user-auth"
+  spec.name          = "user-auth"
   spec.version       = UserAuth::VERSION
   spec.authors       = ["Pete Hawkins"]
   spec.email         = ["pete@phawk.co.uk"]
@@ -32,6 +32,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "activesupport"
   spec.add_runtime_dependency "dotenv"
+  spec.add_runtime_dependency "rack"
+  spec.add_runtime_dependency "rack-contrib"
   spec.add_runtime_dependency "rack-cors"
   spec.add_runtime_dependency "sinatra", "~> 2.0.0"
   spec.add_runtime_dependency "pg", "~> 0.20"

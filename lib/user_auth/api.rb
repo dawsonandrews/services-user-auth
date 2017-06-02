@@ -3,13 +3,16 @@ require_relative "./models/refresh_token"
 require_relative "./models/user"
 require_relative "./token"
 require_relative "./password_verifier"
+require "rack/contrib"
 require "sinatra/base"
 
 module UserAuth
   class Api < Sinatra::Base
+    use Rack::PostBodyContentTypeParser
     include UserAuth::Models
 
-    before { content_type(:json) }
+    enable :raise_errors
+    disable :dump_errors, :show_exceptions, :logging, :static
 
     get "/" do
       json(hello: "world")
@@ -43,6 +46,7 @@ module UserAuth
     end
 
     def json(data)
+      content_type(:json)
       JSON.dump(data)
     end
 
@@ -60,6 +64,10 @@ module UserAuth
         error_code: "validation_failed",
         message: "Validation failed"
       )
+    end
+
+    error Sinatra::NotFound, Sequel::NoMatchingRow do
+      halt 404, json(error_code: "not_found", message: "Endpoint '#{request.path}' not found")
     end
   end
 end

@@ -22,4 +22,5 @@ require "active_support/core_ext/hash/indifferent_access"
 Dotenv.load if %w[development test].include? ENV["APP_ENV"]
 
 # Autoload app dependencies
-(Dir['./config/initializers/*.rb'].sort).uniq.each { |rb| require rb }
+path = File.join(__dir__, "initializers", "*.rb")
+(Dir[path].sort).uniq.each { |rb| require rb }
