@@ -22,5 +22,9 @@ module UserAuth
     def email=(email)
       super(email.try(:downcase))
     end
+
+    def full_info
+      info.merge(email: email)
+    end
   end
 end

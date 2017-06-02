@@ -38,4 +38,11 @@ RSpec.describe UserAuth::User, type: :model do
       expect(user.password_digest).not_to be_nil
     end
   end
+
+  describe "#full_info" do
+    it "returns info along with email" do
+      bob = described_class.new(info: { name: "Bob" }, email: "bob@example.org")
+      expect(bob.full_info).to eq(name: "Bob", email: "bob@example.org")
+    end
+  end
 end

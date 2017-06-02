@@ -8,14 +8,6 @@ module UserAuth
   class Api < Sinatra::Base
     before { content_type(:json) }
 
-    error Sequel::ValidationFailed do |record|
-      halt 422, json(
-        errors: record.errors,
-        error_code: "validation_failed",
-        message: "Validation failed"
-      )
-    end
-
     get "/" do
       json(hello: "world")
     end
@@ -29,7 +21,18 @@ module UserAuth
 
       status 201
 
-      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600))
+      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info)
+    end
+
+    post "/token" do
+      user = User.first(email: params[:email])
+      verifier = PasswordVerifier.new(user.password_digest)
+
+      if verifier.verify(params[:password])
+        json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info)
+      else
+        halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
+      end
     end
 
     def params
@@ -38,6 +41,14 @@ module UserAuth
 
     def json(data)
       JSON.dump(data)
+    end
+
+    error Sequel::ValidationFailed do |record|
+      halt 422, json(
+        errors: record.errors,
+        error_code: "validation_failed",
+        message: "Validation failed"
+      )
     end
   end
 end
