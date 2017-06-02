@@ -45,7 +45,7 @@ map("/auth") { run UserAuth::Api }
 That’s you all setup, see endpoints below for documentation on how to get a token etc.
 
 
-### Endpoints
+## Endpoints
 
 **POST /signup** # sign up
 
