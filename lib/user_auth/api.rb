@@ -22,7 +22,7 @@ module UserAuth
 
       status 201
 
-      json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info, refresh_token: user.refresh_token!)
+      json_user_token(user)
     end
 
     post "/token" do
@@ -30,7 +30,7 @@ module UserAuth
       verifier = PasswordVerifier.new(user.password_digest)
 
       if verifier.verify(params[:password])
-        json(token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600), data: user.full_info, refresh_token: user.refresh_token!)
+        json_user_token(user)
       else
         halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
       end
@@ -42,6 +42,14 @@ module UserAuth
 
     def json(data)
       JSON.dump(data)
+    end
+
+    def json_user_token(user)
+      json(
+        token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600),
+        data: user.full_info,
+        refresh_token: user.refresh_token!
+      )
     end
 
     error Sequel::ValidationFailed do |record|
