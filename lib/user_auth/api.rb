@@ -21,7 +21,12 @@ module UserAuth
     end
 
     post "/signup" do
-      user = User.create(params.slice(:email, :password))
+      user = User.create(
+        email: params[:email],
+        password: params[:password],
+        info: params.fetch(:info, {})
+      )
+
       status 201
 
       json(token: Token.new.create(user_id: user.id))

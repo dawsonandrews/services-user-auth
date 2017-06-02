@@ -13,11 +13,12 @@ RSpec.describe "Signup", type: :api do
 
   context "when valid" do
     it "creates a user and returns a token" do
-      post "/signup", email: "pete@example.org", password: "mcflurrys"
+      post "/signup", email: "pete@example.org", password: "mcflurrys", info: { name: "Pete" }
       expect(http_status).to eq(201)
 
       payload = UserAuth::Token.new.parse(response_json["token"])
-      expect(payload["user_id"]).to be_a(Numeric)
+      user = UserAuth::User[payload["user_id"]]
+      expect(user.info["name"]).to eq("Pete")
     end
   end
 end
