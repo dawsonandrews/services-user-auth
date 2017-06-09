@@ -23,6 +23,11 @@ module UserAuth
         password: params[:password],
         info: params.fetch(:info, {})
       )
+      deliver_email(
+        to: user.email,
+        user_id: user.id,
+        template: "user_signup"
+      )
 
       status 201
 
@@ -42,6 +47,10 @@ module UserAuth
 
     def params
       super.symbolize_keys.with_indifferent_access
+    end
+
+    def deliver_email(options)
+      UserAuth.configuration.deliver_mail.call(options)
     end
 
     def json(data)

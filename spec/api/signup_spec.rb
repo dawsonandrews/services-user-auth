@@ -24,6 +24,10 @@ RSpec.describe "Signup", type: :api do
       expect(user.info["name"]).to eq("Pete")
 
       expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
+
+      expect(last_email.to).to eq("pete@example.org")
+      expect(last_email.template).to eq("user_signup")
+      expect(last_email.user_id).to eq(payload["user_id"])
     end
   end
 end

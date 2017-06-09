@@ -50,6 +50,22 @@ require "user_auth/api"
 map("/auth") { run UserAuth::Api }
 ```
 
+### Configuration
+
+```ruby
+# config/initializers/user_auth.rb
+UserAuth.configure do |config|
+  config.deliver_mail = lambda do |params|
+    EmailDeliveryJob.new(params)
+  end
+end
+
+User.configuration.deliver_mail.call({
+  to: "",
+  template: "password_reset"
+})
+```
+
 That’s you all setup, see endpoints below for documentation on how to get a token etc.
 
 
