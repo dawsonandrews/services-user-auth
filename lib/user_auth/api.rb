@@ -26,6 +26,7 @@ module UserAuth
       deliver_email(
         to: user.email,
         user_id: user.id,
+        user: user.full_info,
         template: "user_signup"
       )
 
