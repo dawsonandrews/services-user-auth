@@ -33,6 +33,10 @@ module UserAuth
       def refresh_token!
         RefreshToken.find_or_create(user: self).token
       end
+
+      def clear_refresh_tokens!
+        refresh_tokens_dataset.destroy
+      end
     end
   end
 end

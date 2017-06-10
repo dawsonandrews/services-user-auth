@@ -68,6 +68,12 @@ module UserAuth
       json_user_token(user)
     end
 
+    post "/logout" do
+      warden.authenticate!
+      current_user.clear_refresh_tokens!
+      json({})
+    end
+
     error Sequel::ValidationFailed do |record|
       halt 422, json(
         errors: record.errors,
