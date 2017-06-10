@@ -1,5 +1,6 @@
 require_relative "./models/refresh_token"
 require_relative "./models/user"
+require_relative "./web/helpers"
 require_relative "./token"
 require_relative "./password_verifier"
 require "rack/contrib"
@@ -18,6 +19,8 @@ module UserAuth
       manager.default_strategies :jwt
       manager.failure_app = ::TokenFailureApp # lib/token_failure_app.rb
     end
+
+    helpers Web::Helpers
 
     get "/" do
       json(service: "user-auth")
@@ -63,35 +66,6 @@ module UserAuth
       user = current_user.update(update_params)
 
       json_user_token(user)
-    end
-
-    def current_user
-      warden.user
-    end
-
-    def warden
-      env["warden"]
-    end
-
-    def params
-      super.symbolize_keys.with_indifferent_access
-    end
-
-    def deliver_email(options)
-      UserAuth.configuration.deliver_mail.call(options)
-    end
-
-    def json(data)
-      content_type(:json)
-      JSON.dump(data)
-    end
-
-    def json_user_token(user)
-      exp = Time.now.to_i + UserAuth.configuration.jwt_exp
-      json(
-        token: Token.new.create(user.to_json.merge(exp: exp)),
-        refresh_token: user.refresh_token!
-      )
     end
 
     error Sequel::ValidationFailed do |record|
