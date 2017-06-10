@@ -170,7 +170,6 @@ Update users password either by authenticating with a valid JWT or providing a p
 
 **Params**
 
-- **token** (optional) - If unauthenticated by jwt token (doing a password reset)
 - **password** - Users new password
 
 ```ruby

@@ -74,6 +74,34 @@ module UserAuth
       json({})
     end
 
+    post "/recover" do
+      if user = User.first(email: params[:email])
+        deliver_email(
+          to: user.email,
+          user: user.to_json,
+          template: "password_reset",
+          reset_token: build_jwt(user.to_json)
+        )
+      end
+
+      json({})
+    end
+
+    put "/user/attributes/password" do
+      warden.authenticate!
+
+      current_user.password_changing = true
+      current_user.update(password: params[:password])
+
+      deliver_email(
+        to: current_user.email,
+        user: current_user.to_json,
+        template: "password_updated"
+      )
+
+      json(json_user_token(current_user))
+    end
+
     error Sequel::ValidationFailed do |record|
       halt 422, json(
         errors: record.errors,
