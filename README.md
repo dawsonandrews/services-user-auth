@@ -55,6 +55,9 @@ map("/auth") { run UserAuth::Api }
 ```ruby
 # config/initializers/user_auth.rb
 UserAuth.configure do |config|
+  config.jwt_exp = 3600 # Expire JWT tokens in 1 hour
+  config.require_account_confirmations = false
+  config.allow_signups = true
   config.deliver_mail = lambda do |params|
     # example params =>
     # {

@@ -25,7 +25,6 @@ module UserAuth
       )
       deliver_email(
         to: user.email,
-        user_id: user.id,
         user: user.to_json,
         template: "user_signup"
       )
@@ -60,8 +59,9 @@ module UserAuth
     end
 
     def json_user_token(user)
+      exp = Time.now.to_i + UserAuth.configuration.jwt_exp
       json(
-        token: Token.new.create(user.to_json.merge(exp: Time.now.to_i + 3600)),
+        token: Token.new.create(user.to_json.merge(exp: exp)),
         refresh_token: user.refresh_token!
       )
     end

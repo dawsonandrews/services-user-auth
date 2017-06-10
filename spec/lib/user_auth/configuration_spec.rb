@@ -7,10 +7,14 @@ RSpec.describe UserAuth::Configuration do
   end
 
   it "enables signups by default" do
-    expect(subject.signups).to be(true)
+    expect(subject.allow_signups).to be(true)
   end
 
   it "disables account confirmation by default" do
-    expect(subject.account_confirmations).to be(false)
+    expect(subject.require_account_confirmations).to be(false)
+  end
+
+  it "defaults token exp to 1 hour" do
+    expect(subject.jwt_exp).to be(3600)
   end
 end
