@@ -14,7 +14,7 @@ module UserAuth
     disable :dump_errors, :show_exceptions, :logging, :static
 
     get "/" do
-      json(hello: "world")
+      json(service: "user-auth")
     end
 
     post "/signup" do
@@ -26,7 +26,7 @@ module UserAuth
       deliver_email(
         to: user.email,
         user_id: user.id,
-        user: user.full_info,
+        user: user.to_json,
         template: "user_signup"
       )
 
@@ -61,8 +61,7 @@ module UserAuth
 
     def json_user_token(user)
       json(
-        token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600),
-        data: user.full_info,
+        token: Token.new.create(user.to_json.merge(exp: Time.now.to_i + 3600)),
         refresh_token: user.refresh_token!
       )
     end

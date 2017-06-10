@@ -26,8 +26,8 @@ module UserAuth
         super(email.try(:downcase))
       end
 
-      def full_info
-        info.merge(email: email).symbolize_keys
+      def to_json
+        info.merge(email: email, user_id: id).symbolize_keys
       end
 
       def refresh_token!
