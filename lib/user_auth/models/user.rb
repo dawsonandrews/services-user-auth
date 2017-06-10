@@ -31,7 +31,7 @@ module UserAuth
       end
 
       def refresh_token!
-        add_refresh_token(user: self).token
+        RefreshToken.find_or_create(user: self).token
       end
     end
   end
