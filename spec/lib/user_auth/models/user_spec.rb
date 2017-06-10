@@ -40,10 +40,10 @@ RSpec.describe UserAuth::Models::User, type: :model do
     end
   end
 
-  describe "#full_info" do
+  describe "#to_json" do
     it "returns info along with email" do
       bob = described_class.new(info: { name: "Bob" }, email: "bob@example.org")
-      expect(bob.full_info).to eq(name: "Bob", email: "bob@example.org")
+      expect(bob.to_json).to eq(name: "Bob", email: "bob@example.org", user_id: bob.id)
     end
   end
 end

@@ -1,4 +1,5 @@
 require_relative "../password_hasher"
+require "active_support/core_ext/hash/conversions"
 
 module UserAuth
   module Models
@@ -25,12 +26,16 @@ module UserAuth
         super(email.try(:downcase))
       end
 
-      def full_info
-        info.merge(email: email)
+      def to_json
+        info.merge(email: email, user_id: id).symbolize_keys
       end
 
       def refresh_token!
-        add_refresh_token(user: self).token
+        RefreshToken.find_or_create(user: self).token
+      end
+
+      def clear_refresh_tokens!
+        refresh_tokens_dataset.destroy
       end
     end
   end

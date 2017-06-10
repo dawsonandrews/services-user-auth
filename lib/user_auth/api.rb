@@ -1,9 +1,11 @@
 require_relative "./models/refresh_token"
 require_relative "./models/user"
+require_relative "./web/helpers"
 require_relative "./token"
 require_relative "./password_verifier"
 require "rack/contrib"
 require "sinatra/base"
+require "token_failure_app"
 
 module UserAuth
   class Api < Sinatra::Base
@@ -13,8 +15,15 @@ module UserAuth
     enable :raise_errors
     disable :dump_errors, :show_exceptions, :logging, :static
 
+    use Warden::Manager do |manager|
+      manager.default_strategies :jwt
+      manager.failure_app = ::TokenFailureApp # lib/token_failure_app.rb
+    end
+
+    helpers Web::Helpers
+
     get "/" do
-      json(hello: "world")
+      json(service: "user-auth")
     end
 
     post "/signup" do
@@ -22,6 +31,11 @@ module UserAuth
         email: params[:email],
         password: params[:password],
         info: params.fetch(:info, {})
+      )
+      deliver_email(
+        to: user.email,
+        user: user.to_json,
+        template: "user_signup"
       )
 
       status 201
@@ -40,21 +54,52 @@ module UserAuth
       end
     end
 
-    def params
-      super.symbolize_keys.with_indifferent_access
+    put "/user" do
+      warden.authenticate!
+
+      update_params = {
+        info: params.fetch(:info, {})
+      }
+
+      update_params[:email] = params[:email] if params[:email]
+
+      user = current_user.update(update_params)
+
+      json_user_token(user)
     end
 
-    def json(data)
-      content_type(:json)
-      JSON.dump(data)
+    post "/logout" do
+      warden.authenticate!
+      current_user.clear_refresh_tokens!
+      json({})
     end
 
-    def json_user_token(user)
-      json(
-        token: Token.new.create(user_id: user.id, exp: Time.now.to_i + 3600),
-        data: user.full_info,
-        refresh_token: user.refresh_token!
+    post "/recover" do
+      if user = User.first(email: params[:email])
+        deliver_email(
+          to: user.email,
+          user: user.to_json,
+          template: "password_reset",
+          reset_token: build_jwt(user.to_json)
+        )
+      end
+
+      json({})
+    end
+
+    put "/user/attributes/password" do
+      warden.authenticate!
+
+      current_user.password_changing = true
+      current_user.update(password: params[:password])
+
+      deliver_email(
+        to: current_user.email,
+        user: current_user.to_json,
+        template: "password_updated"
       )
+
+      json(json_user_token(current_user))
     end
 
     error Sequel::ValidationFailed do |record|

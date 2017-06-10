@@ -11,8 +11,8 @@ module ApiHelper
   end
 
   def token_header(user)
-    access_token = create(:access_token, user: user)
-    { "HTTP_AUTHORIZATION" => "Bearer #{access_token.token}" }
+    jwt_token = UserAuth::Token.new.create(user.to_json)
+    { "HTTP_AUTHORIZATION" => "Bearer #{jwt_token}" }
   end
 
   # Response helpers

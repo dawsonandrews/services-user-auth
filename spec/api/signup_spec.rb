@@ -16,14 +16,20 @@ RSpec.describe "Signup", type: :api do
       post "/signup", email: "pete@example.org", password: "mcflurrys", info: { name: "Pete" }
       expect(http_status).to eq(201)
 
-      expect(response_json["data"]["email"]).to eq("pete@example.org")
-      expect(response_json["data"]["name"]).to eq("Pete")
-
       payload = UserAuth::Token.new.parse(response_json["token"])
+      expect(payload["email"]).to eq("pete@example.org")
+      expect(payload["name"]).to eq("Pete")
+
       user = UserAuth::Models::User[payload["user_id"]]
       expect(user.info["name"]).to eq("Pete")
 
       expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
+
+      expect(last_email.to).to eq("pete@example.org")
+      expect(last_email.template).to eq("user_signup")
+      expect(last_email.user[:user_id]).to eq(payload["user_id"])
+      expect(last_email.user[:email]).to eq("pete@example.org")
+      expect(last_email.user[:name]).to eq("Pete")
     end
   end
 end
