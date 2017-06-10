@@ -76,7 +76,28 @@ That’s you all setup, see endpoints below for documentation on how to get a to
 
 ## Endpoints
 
-**POST /signup** # sign up
+### `POST /signup`
+
+**Params**
+
+- **email** - Users email address
+- **password** - Users password
+- **info** - Basic key value json style object to store additional data about the user
+
+```ruby
+resp = HTTP.post("/signup", email: "test@example.org", password: "hunter2", info: { name: "Test" })
+
+resp.parsed # =>
+
+{
+  token: "jwt-stateless-token",
+  data: {
+    email: "test@example.org",
+    name: "Test"
+  },
+  refresh_token: "refresh-token"
+}
+```
 
 **POST /token** # sign in
 
