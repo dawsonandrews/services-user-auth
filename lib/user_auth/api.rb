@@ -4,6 +4,7 @@ require_relative "./token"
 require_relative "./password_verifier"
 require "rack/contrib"
 require "sinatra/base"
+require "token_failure_app"
 
 module UserAuth
   class Api < Sinatra::Base
@@ -12,6 +13,11 @@ module UserAuth
 
     enable :raise_errors
     disable :dump_errors, :show_exceptions, :logging, :static
+
+    use Warden::Manager do |manager|
+      manager.default_strategies :jwt
+      manager.failure_app = ::TokenFailureApp # lib/token_failure_app.rb
+    end
 
     get "/" do
       json(service: "user-auth")
@@ -43,6 +49,28 @@ module UserAuth
       else
         halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
       end
+    end
+
+    put "/user" do
+      warden.authenticate!
+
+      update_params = {
+        info: params.fetch(:info, {})
+      }
+
+      update_params[:email] = params[:email] if params[:email]
+
+      user = current_user.update(update_params)
+
+      json_user_token(user)
+    end
+
+    def current_user
+      warden.user
+    end
+
+    def warden
+      env["warden"]
     end
 
     def params
