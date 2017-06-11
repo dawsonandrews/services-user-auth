@@ -25,6 +25,7 @@ RSpec.describe "Auth Tokens", type: :api do
         user = UserAuth::Models::User[payload["user_id"]]
         expect(user.email).to eq(payload["email"])
 
+        expect(response_json["token_type"]).to eq("Bearer")
         expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
       end
     end

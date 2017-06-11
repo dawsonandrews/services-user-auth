@@ -99,7 +99,7 @@ module UserAuth
         template: "password_updated"
       )
 
-      json(json_user_token(current_user))
+      json_user_token(current_user)
     end
 
     error Sequel::ValidationFailed do |record|

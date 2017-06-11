@@ -98,6 +98,7 @@ resp = HTTP.post("/signup", email: "test@example.org", password: "hunter2", info
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -119,6 +120,7 @@ resp = HTTP.post("/token", grant_type: "refresh_token", refresh_token: "some-ref
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -137,6 +139,7 @@ resp = HTTP.put("/user", email: "newemail@example.org", info: { foo: "Bar" })
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data"
 }
 ```
@@ -183,6 +186,7 @@ resp = HTTP.put("/user/attributes/password", password: "new-password", token: "p
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -198,6 +202,7 @@ resp = HTTP.post("/verify", token: "confirmation-token")
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
