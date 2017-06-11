@@ -6,7 +6,7 @@ module UserAuth
       end
 
       def current_user
-        warden.user
+        @current_user ||= UserAuth::Models::User.with_pk!(warden.user.user_id)
       end
 
       def params

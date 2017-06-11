@@ -1,6 +1,7 @@
 require "base64"
 require "user_auth/token"
 require "warden"
+require "ostruct"
 
 Warden::Manager.before_failure do |env,opts|
   # Sinatra is very sensitive to the request method
@@ -22,7 +23,7 @@ Warden::Strategies.add(:jwt) do
     end
 
     payload = UserAuth::Token.new.parse(token_str)
-    success!(UserAuth::Models::User.with_pk!(payload["user_id"]))
+    success!(OpenStruct.new(payload))
   rescue UserAuth::Token::ParseError => e
     throw(:warden, message: "Auth token error: #{e.message}")
   end
