@@ -24,6 +24,7 @@ module UserAuth
 
       def json_user_token(user)
         json(
+          token_type: "Bearer",
           token: build_jwt(user.to_json),
           refresh_token: user.refresh_token!
         )

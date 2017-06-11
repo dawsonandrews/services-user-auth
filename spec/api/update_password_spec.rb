@@ -17,8 +17,10 @@ RSpec.describe "Update password", type: :api do
 
     put "/user/attributes/password", params, token_header(user)
     expect(http_status).to eq(200)
+
     expect(response_json["token"]).not_to be_nil
     expect(response_json["refresh_token"]).not_to be_nil
+    expect(response_json["token_type"]).to eq("Bearer")
 
     expect(last_email.to).to eq(user.email)
     expect(last_email.template).to eq("password_updated")

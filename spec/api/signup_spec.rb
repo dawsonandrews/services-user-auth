@@ -23,6 +23,7 @@ RSpec.describe "Signup", type: :api do
       user = UserAuth::Models::User[payload["user_id"]]
       expect(user.info["name"]).to eq("Pete")
 
+      expect(response_json["token_type"]).to eq("Bearer")
       expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
 
       expect(last_email.to).to eq("pete@example.org")

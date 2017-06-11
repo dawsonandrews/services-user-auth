@@ -54,6 +54,8 @@ map("/auth") { run UserAuth::Api }
 
 ```ruby
 # config/initializers/user_auth.rb
+require "user_auth"
+
 UserAuth.configure do |config|
   config.jwt_exp = 3600 # Expire JWT tokens in 1 hour
   config.require_account_confirmations = false
@@ -96,6 +98,7 @@ resp = HTTP.post("/signup", email: "test@example.org", password: "hunter2", info
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -105,15 +108,19 @@ resp.parsed # =>
 
 **Params**
 
-- **email** - Users email address
+- **grant_type** - If 'password' provide username and password, if 'refresh_token' provide refresh_token param.
+- **username** - Users email address
 - **password** - Users password
+- **refresh_token** - Users refresh token
 
 ```ruby
-resp = HTTP.post("/token", email: "test@example.org", password: "hunter2")
+resp = HTTP.post("/token", grant_type: "password", username: "test@example.org", password: "hunter2") # or...
+resp = HTTP.post("/token", grant_type: "refresh_token", refresh_token: "some-refresh-token")
 
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -132,6 +139,7 @@ resp = HTTP.put("/user", email: "newemail@example.org", info: { foo: "Bar" })
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data"
 }
 ```
@@ -178,6 +186,7 @@ resp = HTTP.put("/user/attributes/password", password: "new-password", token: "p
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
@@ -193,6 +202,7 @@ resp = HTTP.post("/verify", token: "confirmation-token")
 resp.parsed # =>
 
 {
+  token_type: "Bearer",
   token: "jwt-stateless-token-includes-user-data",
   refresh_token: "refresh-token"
 }
