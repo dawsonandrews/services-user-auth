@@ -10,7 +10,7 @@ RSpec.describe "Auth Tokens", type: :api do
   context "grant_type: password" do
     context "when invalid" do
       it "returns bad request" do
-        post "/token", email: "pete@example.org", password: "mcfl"
+        post "/token", username: "pete@example.org", password: "mcfl"
         expect(http_status).to eq(404)
         expect(response_json["error_code"]).to eq("not_found")
       end
@@ -18,7 +18,7 @@ RSpec.describe "Auth Tokens", type: :api do
 
     context "when valid" do
       it "provides an access token" do
-        post "/token", email: "pete@example.org", password: "mcflurrys"
+        post "/token", username: "pete@example.org", password: "mcflurrys"
         expect(http_status).to eq(200)
 
         payload = UserAuth::Token.new.parse(response_json["token"])

@@ -107,13 +107,13 @@ resp.parsed # =>
 
 **Params**
 
-- **grant_type** - If 'password' provide email and password, if 'refresh_token' provide refresh_token param.
-- **email** - Users email address
+- **grant_type** - If 'password' provide username and password, if 'refresh_token' provide refresh_token param.
+- **username** - Users email address
 - **password** - Users password
 - **refresh_token** - Users refresh token
 
 ```ruby
-resp = HTTP.post("/token", grant_type: "password", email: "test@example.org", password: "hunter2") # or...
+resp = HTTP.post("/token", grant_type: "password", username: "test@example.org", password: "hunter2") # or...
 resp = HTTP.post("/token", grant_type: "refresh_token", refresh_token: "some-refresh-token")
 
 resp.parsed # =>

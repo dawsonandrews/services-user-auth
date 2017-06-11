@@ -44,7 +44,7 @@ module UserAuth
     end
 
     post "/token" do
-      user = User.first(email: params[:email])
+      user = User.first(email: params[:username])
       verifier = PasswordVerifier.new(user.password_digest)
 
       if verifier.verify(params[:password])
