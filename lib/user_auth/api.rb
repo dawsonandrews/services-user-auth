@@ -46,10 +46,10 @@ module UserAuth
     post "/token" do
       case params[:grant_type]
       when "password"
-        user = User.first!(email: params[:username])
-        verifier = PasswordVerifier.new(user.password_digest)
+        user = User.first(email: params[:username])
+        verifier = PasswordVerifier.new(user&.password_digest)
 
-        if verifier.verify(params[:password])
+        if user && verifier.verify(params[:password])
           json_user_token(user)
         else
           halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
