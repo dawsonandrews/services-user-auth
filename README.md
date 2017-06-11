@@ -54,6 +54,8 @@ map("/auth") { run UserAuth::Api }
 
 ```ruby
 # config/initializers/user_auth.rb
+require "user_auth"
+
 UserAuth.configure do |config|
   config.jwt_exp = 3600 # Expire JWT tokens in 1 hour
   config.require_account_confirmations = false
@@ -105,11 +107,14 @@ resp.parsed # =>
 
 **Params**
 
+- **grant_type** - If 'password' provide email and password, if 'refresh_token' provide refresh_token param.
 - **email** - Users email address
 - **password** - Users password
+- **refresh_token** - Users refresh token
 
 ```ruby
-resp = HTTP.post("/token", email: "test@example.org", password: "hunter2")
+resp = HTTP.post("/token", grant_type: "password", email: "test@example.org", password: "hunter2") # or...
+resp = HTTP.post("/token", grant_type: "refresh_token", refresh_token: "some-refresh-token")
 
 resp.parsed # =>
 
