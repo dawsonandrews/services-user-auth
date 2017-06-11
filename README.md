@@ -208,6 +208,10 @@ resp.parsed # =>
 }
 ```
 
+### TODO: Social auth
+
+Using [omniauth](https://github.com/omniauth/omniauth) to allow signin with third party services such as facebook.
+
 
 ## Development
 
