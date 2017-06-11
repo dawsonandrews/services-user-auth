@@ -44,13 +44,18 @@ module UserAuth
     end
 
     post "/token" do
-      user = User.first(email: params[:username])
-      verifier = PasswordVerifier.new(user.password_digest)
+      case params[:grant_type]
+      when "password"
+        user = User.first!(email: params[:username])
+        verifier = PasswordVerifier.new(user.password_digest)
 
-      if verifier.verify(params[:password])
-        json_user_token(user)
+        if verifier.verify(params[:password])
+          json_user_token(user)
+        else
+          halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
+        end
       else
-        halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
+        halt 400, json(error_code: "bad_request", message: "grant_type must be one of password, refresh_token.")
       end
     end
 

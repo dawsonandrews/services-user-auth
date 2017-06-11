@@ -4,13 +4,24 @@ RSpec.describe "Auth Tokens", type: :api do
   before { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
 
   context "grant_type: unknown" do
-    it "returns bad request"
+    it "returns bad request" do
+      post "/token", grant_type: "random"
+      expect(http_status).to eq(400)
+    end
   end
 
   context "grant_type: password" do
-    context "when invalid" do
-      it "returns bad request" do
-        post "/token", username: "pete@example.org", password: "mcfl"
+    context "when username is wrong" do
+      it "returns not found" do
+        post "/token", grant_type: "password", username: "pete@bad.org"
+        expect(http_status).to eq(404)
+        expect(response_json["error_code"]).to eq("not_found")
+      end
+    end
+
+    context "when password is wrong" do
+      it "returns not found" do
+        post "/token", grant_type: "password", username: "pete@example.org", password: "mcfl"
         expect(http_status).to eq(404)
         expect(response_json["error_code"]).to eq("not_found")
       end
@@ -18,7 +29,7 @@ RSpec.describe "Auth Tokens", type: :api do
 
     context "when valid" do
       it "provides an access token" do
-        post "/token", username: "pete@example.org", password: "mcflurrys"
+        post "/token", grant_type: "password", username: "pete@example.org", password: "mcflurrys"
         expect(http_status).to eq(200)
 
         payload = UserAuth::Token.new.parse(response_json["token"])
