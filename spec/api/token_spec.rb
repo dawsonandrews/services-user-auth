@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe "Auth Tokens", type: :api do
-  before { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
+  let!(:user) { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
 
   context "grant_type: unknown" do
     it "returns bad request" do
@@ -33,8 +33,8 @@ RSpec.describe "Auth Tokens", type: :api do
         expect(http_status).to eq(200)
 
         payload = UserAuth::Token.new.parse(response_json["token"])
-        user = UserAuth::Models::User[payload["user_id"]]
-        expect(user.email).to eq(payload["email"])
+        expect(payload["email"]).to eq(user.email)
+        expect(payload["user_id"]).to eq(user.id)
 
         expect(response_json["token_type"]).to eq("Bearer")
         expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
@@ -44,11 +44,27 @@ RSpec.describe "Auth Tokens", type: :api do
 
   context "grant_type: refresh_token" do
     context "when invalid" do
-      it "returns bad request"
+      it "returns bad request" do
+        post "/token", grant_type: "refresh_token", refresh_token: "fake-token"
+        expect(http_status).to eq(400)
+      end
     end
 
     context "when valid" do
-      it "provides an access token"
+      let!(:refresh_token) { user.refresh_token! }
+
+      it "provides an access token" do
+
+        post "/token", grant_type: "refresh_token", refresh_token: refresh_token
+        expect(http_status).to eq(200)
+
+        payload = UserAuth::Token.new.parse(response_json["token"])
+        expect(payload["email"]).to eq(user.email)
+        expect(payload["user_id"]).to eq(user.id)
+
+        expect(response_json["token_type"]).to eq("Bearer")
+        expect(response_json["refresh_token"]).to eq(user.refresh_tokens.first.token)
+      end
     end
   end
 end

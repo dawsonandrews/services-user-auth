@@ -54,8 +54,14 @@ module UserAuth
         else
           halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
         end
+      when "refresh_token"
+        if refresh_token = RefreshToken.first(token: params[:refresh_token])
+          json_user_token(refresh_token.user)
+        else
+          halt 400, json(error_code: "bad_request", message: "Invalid refresh_token")
+        end
       else
-        halt 400, json(error_code: "bad_request", message: "grant_type must be one of password, refresh_token.")
+        halt 400, json(error_code: "bad_request", message: "grant_type must be one of password, refresh_token")
       end
     end
 
