@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "da-core", "~> 0.1.1"
+  spec.add_runtime_dependency "da-core", "~> 0.1.5"
   spec.add_runtime_dependency "pg", "~> 0.20"
   spec.add_runtime_dependency "sequel", "~> 4.44.0"
   spec.add_runtime_dependency "bcrypt"

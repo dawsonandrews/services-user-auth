@@ -1,7 +1,9 @@
 require_relative "./config/boot"
 require_relative "./lib/user_auth/api"
+require "da/web/exception_handling"
 require "rack/cors"
 
+use DA::Web::ExceptionHandling
 use Rack::Deflater
 use Rack::Cors do
   allow do
