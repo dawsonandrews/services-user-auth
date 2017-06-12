@@ -1,4 +1,5 @@
 require "spec_helper"
+require "da/core/auth_token"
 
 RSpec.describe "Updating user info", type: :api do
   let(:user) { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
@@ -7,7 +8,7 @@ RSpec.describe "Updating user info", type: :api do
     it "returns unprocessable entity" do
       params = { email: "" }
 
-      put "/user", params, token_header(user)
+      put "/user", params, token_header(user.to_json)
       expect(http_status).to eq(422)
       expect(response_json["error_code"]).to eq("validation_failed")
     end
@@ -16,10 +17,10 @@ RSpec.describe "Updating user info", type: :api do
   context "when valid" do
     it "updates the users details" do
       params = { info: { name: "Jean" } }
-      put "/user", params, token_header(user)
+      put "/user", params, token_header(user.to_json)
       expect(http_status).to eq(200)
 
-      payload = UserAuth::Token.new.parse(response_json["token"])
+      payload = AuthToken.new.parse(response_json["token"])
       expect(payload["name"]).to eq("Jean")
       expect(payload["email"]).to eq("pete@example.org")
     end

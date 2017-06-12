@@ -1,24 +1,12 @@
+require "da/web"
 require_relative "./models/refresh_token"
 require_relative "./models/user"
 require_relative "./web/helpers"
-require_relative "./token"
 require_relative "./password_verifier"
-require "rack/contrib"
-require "sinatra/base"
-require "token_failure_app"
 
 module UserAuth
-  class Api < Sinatra::Base
-    use Rack::PostBodyContentTypeParser
+  class Api < DA::Web::BaseRoute
     include UserAuth::Models
-
-    enable :raise_errors
-    disable :dump_errors, :show_exceptions, :logging, :static
-
-    use Warden::Manager do |manager|
-      manager.default_strategies :jwt
-      manager.failure_app = ::TokenFailureApp # lib/token_failure_app.rb
-    end
 
     helpers Web::Helpers
 
@@ -55,7 +43,9 @@ module UserAuth
           halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
         end
       when "refresh_token"
-        if refresh_token = RefreshToken.first(token: params[:refresh_token])
+        refresh_token = RefreshToken.first(token: params[:refresh_token])
+
+        if refresh_token
           json_user_token(refresh_token.user)
         else
           halt 400, json(error_code: "bad_request", message: "Invalid refresh_token")
@@ -86,7 +76,9 @@ module UserAuth
     end
 
     post "/recover" do
-      if user = User.first(email: params[:email])
+      user = User.first(email: params[:email])
+
+      if user
         deliver_email(
           to: user.email,
           user: user.to_json,
