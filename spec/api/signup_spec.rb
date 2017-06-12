@@ -16,7 +16,7 @@ RSpec.describe "Signup", type: :api do
       post "/signup", email: "pete@example.org", password: "mcflurrys", info: { name: "Pete" }
       expect(http_status).to eq(201)
 
-      payload = UserAuth::Token.new.parse(response_json["token"])
+      payload = AuthToken.new.parse(response_json["token"])
       expect(payload["email"]).to eq("pete@example.org")
       expect(payload["name"]).to eq("Pete")
 

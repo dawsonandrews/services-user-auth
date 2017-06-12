@@ -1,6 +1,7 @@
 require "json"
 require "base64"
 require "rack/test"
+require "da/core/auth_token"
 
 module ApiHelper
   include Rack::Test::Methods
@@ -11,7 +12,7 @@ module ApiHelper
   end
 
   def token_header(user)
-    jwt_token = UserAuth::Token.new.create(user.to_json)
+    jwt_token = AuthToken.new.create(user.to_json)
     { "HTTP_AUTHORIZATION" => "Bearer #{jwt_token}" }
   end
 

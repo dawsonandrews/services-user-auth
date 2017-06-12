@@ -1,24 +1,12 @@
 require_relative "./models/refresh_token"
 require_relative "./models/user"
 require_relative "./web/helpers"
-require_relative "./token"
 require_relative "./password_verifier"
-require "rack/contrib"
-require "sinatra/base"
-require "token_failure_app"
+require "da/web"
 
 module UserAuth
-  class Api < Sinatra::Base
-    use Rack::PostBodyContentTypeParser
+  class Api < DA::Web::BaseRoute
     include UserAuth::Models
-
-    enable :raise_errors
-    disable :dump_errors, :show_exceptions, :logging, :static
-
-    use Warden::Manager do |manager|
-      manager.default_strategies :jwt
-      manager.failure_app = ::TokenFailureApp # lib/token_failure_app.rb
-    end
 
     helpers Web::Helpers
 

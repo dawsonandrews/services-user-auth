@@ -22,7 +22,7 @@ RSpec.describe "Recover account", type: :api do
       expect(last_email.user[:user_id]).to eq(user.id)
       expect(last_email.user[:email]).to eq(user.email)
 
-      payload = UserAuth::Token.new.parse(last_email.reset_token)
+      payload = AuthToken.new.parse(last_email.reset_token)
       expect(payload["user_id"]).to eq(user.id)
       expect(payload["email"]).to eq(user.email)
     end

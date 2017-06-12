@@ -1,4 +1,5 @@
 require "spec_helper"
+require "da/core/auth_token"
 
 RSpec.describe "Auth Tokens", type: :api do
   let!(:user) { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
@@ -32,7 +33,7 @@ RSpec.describe "Auth Tokens", type: :api do
         post "/token", grant_type: "password", username: "pete@example.org", password: "mcflurrys"
         expect(http_status).to eq(200)
 
-        payload = UserAuth::Token.new.parse(response_json["token"])
+        payload = AuthToken.new.parse(response_json["token"])
         expect(payload["email"]).to eq(user.email)
         expect(payload["user_id"]).to eq(user.id)
 
@@ -58,7 +59,7 @@ RSpec.describe "Auth Tokens", type: :api do
         post "/token", grant_type: "refresh_token", refresh_token: refresh_token
         expect(http_status).to eq(200)
 
-        payload = UserAuth::Token.new.parse(response_json["token"])
+        payload = AuthToken.new.parse(response_json["token"])
         expect(payload["email"]).to eq(user.email)
         expect(payload["user_id"]).to eq(user.id)
 

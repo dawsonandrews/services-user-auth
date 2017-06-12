@@ -1,4 +1,5 @@
 require "spec_helper"
+require "da/core/auth_token"
 
 RSpec.describe "Updating user info", type: :api do
   let(:user) { UserAuth::Models::User.create(email: "pete@example.org", password: "mcflurrys") }
@@ -19,7 +20,7 @@ RSpec.describe "Updating user info", type: :api do
       put "/user", params, token_header(user)
       expect(http_status).to eq(200)
 
-      payload = UserAuth::Token.new.parse(response_json["token"])
+      payload = AuthToken.new.parse(response_json["token"])
       expect(payload["name"]).to eq("Jean")
       expect(payload["email"]).to eq("pete@example.org")
     end
