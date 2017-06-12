@@ -105,16 +105,16 @@ module UserAuth
       json_user_token(current_user)
     end
 
-    error Sequel::ValidationFailed do |record|
-      halt 422, json(
-        errors: record.errors,
-        error_code: "validation_failed",
-        message: "Validation failed"
-      )
+    error Sinatra::NotFound, Sequel::NoMatchingRow do
+      halt_not_found("Endpoint '#{request.path_info}' not found")
     end
 
-    error Sinatra::NotFound, Sequel::NoMatchingRow do
-      halt 404, json(error_code: "not_found", message: "Endpoint '#{request.path}' not found")
+    error Sequel::ValidationFailed do |e|
+      halt_unprocessible_entity(e)
+    end
+
+    error AuthToken::ParseError do |e|
+      halt_bad_request(e.message)
     end
   end
 end
