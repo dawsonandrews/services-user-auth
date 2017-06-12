@@ -1,8 +1,8 @@
+require "da/web"
 require_relative "./models/refresh_token"
 require_relative "./models/user"
 require_relative "./web/helpers"
 require_relative "./password_verifier"
-require "da/web"
 
 module UserAuth
   class Api < DA::Web::BaseRoute
