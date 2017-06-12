@@ -8,7 +8,7 @@ RSpec.describe "Updating user info", type: :api do
     it "returns unprocessable entity" do
       params = { email: "" }
 
-      put "/user", params, token_header(user)
+      put "/user", params, token_header(user.to_json)
       expect(http_status).to eq(422)
       expect(response_json["error_code"]).to eq("validation_failed")
     end
@@ -17,7 +17,7 @@ RSpec.describe "Updating user info", type: :api do
   context "when valid" do
     it "updates the users details" do
       params = { info: { name: "Jean" } }
-      put "/user", params, token_header(user)
+      put "/user", params, token_header(user.to_json)
       expect(http_status).to eq(200)
 
       payload = AuthToken.new.parse(response_json["token"])

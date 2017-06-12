@@ -7,7 +7,7 @@ RSpec.describe "Update password", type: :api do
   it "ensures min-length" do
     params = { password: "short" }
 
-    put "/user/attributes/password", params, token_header(user)
+    put "/user/attributes/password", params, token_header(user.to_json)
     expect(http_status).to eq(422)
     expect(response_json["errors"]["password"]).to eq(["is shorter than 8 characters"])
   end
@@ -15,7 +15,7 @@ RSpec.describe "Update password", type: :api do
   it "updates" do
     params = { password: "newPassword1" }
 
-    put "/user/attributes/password", params, token_header(user)
+    put "/user/attributes/password", params, token_header(user.to_json)
     expect(http_status).to eq(200)
 
     expect(response_json["token"]).not_to be_nil

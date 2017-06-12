@@ -6,7 +6,7 @@ RSpec.describe "Logout", type: :api do
 
     user = UserAuth::Models::User.last
 
-    post "/logout", nil, token_header(user)
+    post "/logout", nil, token_header(user.to_json)
     expect(http_status).to eq(200)
     expect(response_json).to eq({})
     expect(user.refresh_tokens_dataset.count).to eq(0)
