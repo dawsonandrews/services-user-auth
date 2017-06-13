@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "user_auth/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "user-auth"
+  spec.name          = "da-user-auth"
   spec.version       = UserAuth::VERSION
   spec.authors       = ["Pete Hawkins"]
   spec.email         = ["pete@phawk.co.uk"]
