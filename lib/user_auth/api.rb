@@ -55,7 +55,9 @@ module UserAuth
           halt 404, json(error_code: "not_found", message: "Your email / password is incorrect")
         end
       when "refresh_token"
-        if refresh_token = RefreshToken.first(token: params[:refresh_token])
+        refresh_token = RefreshToken.first(token: params[:refresh_token])
+
+        if refresh_token
           json_user_token(refresh_token.user)
         else
           halt 400, json(error_code: "bad_request", message: "Invalid refresh_token")
@@ -86,7 +88,9 @@ module UserAuth
     end
 
     post "/recover" do
-      if user = User.first(email: params[:email])
+      user = User.first(email: params[:email])
+
+      if user
         deliver_email(
           to: user.email,
           user: user.to_json,

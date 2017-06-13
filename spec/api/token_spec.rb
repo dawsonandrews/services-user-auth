@@ -54,7 +54,6 @@ RSpec.describe "Auth Tokens", type: :api do
       let!(:refresh_token) { user.refresh_token! }
 
       it "provides an access token" do
-
         post "/token", grant_type: "refresh_token", refresh_token: refresh_token
         expect(http_status).to eq(200)
 
